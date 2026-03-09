@@ -1,0 +1,8 @@
+{
+  "name": "EarnUp - Modern Earning App",
+  "description": "A clean, modern earning application featuring ad rewards, data selling simulation, and a referral system.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
