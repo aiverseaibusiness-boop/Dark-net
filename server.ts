@@ -80,66 +80,18 @@ async function startServer() {
     }
   });
 
-  app.post("/api/auth/signup", (req, res) => {
-    const { email, password, referralCode, name, dob, age, profilePic } = req.body;
-    const myReferralCode = "REF" + Math.random().toString(36).substring(2, 8).toUpperCase();
-    try {
-      const existingUser = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
-      if (existingUser) {
-        res.json({ success: true, userId: existingUser.id });
-        return;
-      }
-
-      const result = db.prepare("INSERT INTO users (email, password, name, dob, age, profile_pic, referral_code, referred_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").run(email, password, name, dob, age, profilePic, myReferralCode, referralCode || null);
-      
-      // If referred by someone, give them 1000 points (₹1)
-      if (referralCode) {
-        const referrer = db.prepare("SELECT id FROM users WHERE referral_code = ?").get(referralCode);
-        if (referrer) {
-           db.prepare("UPDATE users SET points = points + 1000 WHERE id = ?").run(referrer.id);
-           db.prepare("INSERT INTO history (user_id, type, amount, description) VALUES (?, 'Referral', 1, 'Referral reward for new user signup')").run(referrer.id);
-        }
-      }
-
-      res.json({ success: true, userId: result.lastInsertRowid });
-    } catch (e) {
-      console.error(e);
-      res.status(400).json({ error: "Invalid data" });
-    }
-  });
-
   app.post("/api/auth/login", (req, res) => {
-    const { email, password } = req.body;
+    const { email } = req.body;
     
     // First try to find existing user with this email
-    let user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+    const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
     
     if (user) {
-      // If user exists, log them in regardless of password
+      // If user exists, log them in
       res.json({ success: true, user });
     } else {
-      // If user doesn't exist, create a new one
-      const myReferralCode = "REF" + Math.random().toString(36).substring(2, 8).toUpperCase();
-      try {
-        const result = db.prepare(`
-          INSERT INTO users (email, password, referral_code, name, dob, age, profile_pic) 
-          VALUES (?, ?, ?, ?, ?, ?, ?)
-        `).run(
-          email, 
-          password || 'default_password', 
-          myReferralCode, 
-          'User', 
-          '2000-01-01', 
-          25, 
-          'https://i.postimg.cc/7hxmYRSL/IMG-20260211-164250-150.webp'
-        );
-        
-        user = db.prepare("SELECT * FROM users WHERE id = ?").get(result.lastInsertRowid);
-        res.json({ success: true, user });
-      } catch (e) {
-        console.error("Error auto-creating user:", e);
-        res.status(500).json({ error: "Failed to create user" });
-      }
+      // If user doesn't exist, return error
+      res.status(404).json({ success: false, error: "Account is not available" });
     }
   });
 

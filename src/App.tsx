@@ -4,7 +4,6 @@ import {
   History as HistoryIcon, 
   Wallet, 
   User, 
-  PlayCircle, 
   Database as DataIcon, 
   ArrowRight, 
   LogOut, 
@@ -77,11 +76,6 @@ const Onboarding = ({ onComplete }: { onComplete: () => void }) => {
       title: "Welcome to EarnUp!",
       description: "The most modern way to earn extra rewards from your phone.",
       icon: <TrendingUp size={48} className="text-blue-600" />,
-    },
-    {
-      title: "Watch & Earn",
-      description: "Earn ₹3.00 for every rewarded video ad you watch. Simple and fast!",
-      icon: <PlayCircle size={48} className="text-blue-600" />,
     },
     {
       title: "Data Selling",
@@ -816,7 +810,7 @@ const ProfilePage = ({ user, onLogout, isDarkMode, toggleDarkMode }: {
         body: (
           <div className="space-y-4">
             {[
-              { q: 'How can I earn more money?', a: 'You can earn by watching daily ads, selling your unused background data, and referring friends. Premium members earn 2x more!' },
+              { q: 'How can I earn more money?', a: 'You can earn by selling your unused background data and referring friends. Premium members earn 2x more!' },
               { q: 'What is the minimum withdrawal?', a: 'The minimum withdrawal amount is ₹500. Once you reach this limit, you can request a payout via UPI or Gift Cards.' },
               { q: 'How long does payment verification take?', a: 'Payment verification for Premium membership usually takes 12-24 hours. Once verified, your account will be upgraded instantly.' },
               { q: 'Is my data safe while selling?', a: 'Yes, we only share non-personal, anonymous background data for market research. We never access your private files or messages.' },
